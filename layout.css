@@ -1,0 +1,678 @@
+/* ==========================================================================
+   CampusOne — Responsive Layout & Structural Architecture
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--canvas-void);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background Atmosphere Gradients & Architectural Texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.8;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -12vh;
+  left: 15%;
+  width: 70vw;
+  height: 55vh;
+  background: radial-gradient(ellipse at 50% 15%, rgba(0, 242, 254, 0.07) 0%, rgba(123, 97, 255, 0.045) 45%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   1. Persistent Demo Environment Banner
+   -------------------------------------------------------------------------- */
+.demo-banner {
+  background: linear-gradient(90deg, rgba(14, 19, 31, 0.95), rgba(22, 29, 46, 0.95));
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+  color: var(--semantic-warn);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-banner);
+  backdrop-filter: blur(12px);
+}
+
+.demo-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demo-pill {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.40);
+  border-radius: var(--radius-xs);
+  padding: 1px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #FBBF24;
+}
+
+/* --------------------------------------------------------------------------
+   2. Main Shell Layout (Sidebar + Main Viewport)
+   -------------------------------------------------------------------------- */
+.app-shell {
+  display: flex;
+  min-height: calc(100vh - 33px);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+/* Desktop Sidebar */
+.app-sidebar {
+  width: 240px;
+  background-color: var(--canvas-surface-1);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 33px;
+  height: calc(100vh - 33px);
+  flex-shrink: 0;
+  transition: width var(--duration-normal) var(--spring-snappy);
+  z-index: var(--z-sticky);
+  box-shadow: 4px 0 24px -4px rgba(0, 0, 0, 0.4);
+}
+
+/* Collapsed Sidebar State (Adaptive for Laptop screens 1024px–1199px) */
+.app-sidebar.collapsed {
+  width: 72px;
+}
+
+.sidebar-header {
+  height: 68px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.app-sidebar.collapsed .sidebar-header {
+  padding: 0 12px;
+  justify-content: center;
+}
+
+.brand-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--brand-cyan), var(--brand-iris));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
+  flex-shrink: 0;
+  box-shadow: 0 0 16px var(--brand-cyan-glow);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.brand-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.app-sidebar.collapsed .brand-name {
+  display: none;
+}
+
+.sidebar-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast) ease;
+}
+
+.sidebar-toggle-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+  background: var(--canvas-surface-2);
+}
+
+.app-sidebar.collapsed .sidebar-toggle-btn {
+  display: none; /* In collapsed mode, clicking brand or pressing shortcut expands */
+}
+
+.sidebar-nav {
+  padding: 16px 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+
+.nav-item {
+  width: 100%;
+  min-height: var(--touch-target-min);
+  padding: 0 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--duration-fast) ease;
+  position: relative;
+}
+
+.app-sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0;
+}
+
+.nav-item:hover {
+  background: var(--canvas-surface-2);
+  color: var(--text-primary);
+  border-color: var(--border-subtle);
+}
+
+.nav-item.active {
+  background: var(--brand-cyan-surface);
+  color: var(--brand-cyan);
+  border-color: var(--border-active);
+  font-weight: 600;
+  box-shadow: inset 0 0 12px rgba(0, 242, 254, 0.1);
+}
+
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-label {
+  white-space: nowrap;
+  flex: 1;
+}
+
+.app-sidebar.collapsed .nav-label {
+  display: none;
+}
+
+.nav-shortcut {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+}
+
+.app-sidebar.collapsed .nav-shortcut {
+  display: none;
+}
+
+/* Tooltip on Collapsed Sidebar */
+.app-sidebar.collapsed .nav-item[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 78px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--canvas-surface-3);
+  color: var(--text-primary);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: var(--shadow-modal);
+  border: 1px solid var(--border-medium);
+  z-index: var(--z-tooltip);
+  pointer-events: none;
+}
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.student-card-mini {
+  background: var(--canvas-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.student-card-mini:hover {
+  border-color: var(--border-medium);
+  background: var(--canvas-surface-3);
+}
+
+.app-sidebar.collapsed .student-card-mini {
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.student-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, #1E293B, #334155);
+  border: 1px solid var(--brand-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--brand-cyan);
+  flex-shrink: 0;
+}
+
+.student-meta {
+  overflow: hidden;
+}
+
+.app-sidebar.collapsed .student-meta {
+  display: none;
+}
+
+.student-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.student-roll {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   3. Main Viewport & Scroll Container
+   -------------------------------------------------------------------------- */
+.main-viewport {
+  flex: 1;
+  min-width: 0; /* Prevents flexbox overflow blowout */
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 33px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Top App Header */
+.app-header {
+  height: 68px;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(7, 9, 14, 0.75);
+  backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quick-id-trigger {
+  min-height: 40px;
+  padding: 0 14px;
+  background: var(--canvas-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--duration-fast) ease;
+}
+
+.quick-id-trigger:hover {
+  background: var(--canvas-surface-3);
+  border-color: var(--brand-cyan);
+  color: var(--brand-cyan);
+}
+
+/* Content Canvas Area */
+.canvas-content {
+  flex: 1;
+  padding: 28px 32px;
+  max-width: 1360px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   4. Mobile Floating Glass Dock (Hidden on Desktop)
+   -------------------------------------------------------------------------- */
+.mobile-glass-dock {
+  display: none;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(1rem + env(safe-area-inset-bottom, 16px));
+  width: 92%;
+  max-width: 380px;
+  height: 64px;
+  background: var(--canvas-glass);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border-specular);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  z-index: var(--z-dock);
+  padding: 6px;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  justify-content: space-around;
+}
+
+.dock-item {
+  height: 100%;
+  min-height: var(--touch-target-min);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+  position: relative;
+}
+
+.dock-item:hover, .dock-item:focus-visible {
+  color: var(--text-primary);
+}
+
+.dock-item.active {
+  color: var(--brand-cyan);
+}
+
+.dock-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 16px;
+  height: 2px;
+  background: var(--brand-cyan);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 8px var(--brand-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   5. Accessible Responsive Modal / Bottom Sheet (ModalOrSheet)
+   -------------------------------------------------------------------------- */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: var(--z-backdrop);
+  display: none;
+  opacity: 0;
+  transition: opacity var(--duration-normal) ease;
+}
+
+.sheet-backdrop.active {
+  display: flex;
+  opacity: 1;
+}
+
+.sheet-container {
+  position: fixed;
+  z-index: var(--z-sheet-modal);
+  background: var(--canvas-surface-1);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform var(--duration-normal) var(--spring-snappy), opacity var(--duration-normal) ease;
+}
+
+/* Desktop Modal Mode (Centered) */
+@media (min-width: 768px) {
+  .sheet-backdrop.active {
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .sheet-container {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    border-radius: var(--radius-xl);
+    max-height: 85vh;
+    animation: modalScaleIn var(--duration-normal) var(--spring-snappy);
+  }
+
+  .sheet-drag-handle {
+    display: none;
+  }
+}
+
+/* Mobile Bottom Sheet Mode (< 768px) */
+@media (max-width: 767px) {
+  .sheet-backdrop.active {
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .sheet-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    max-height: 85vh;
+    box-shadow: var(--shadow-sheet);
+    animation: sheetSlideUp var(--duration-normal) var(--spring-snappy);
+  }
+
+  .sheet-drag-handle {
+    width: 44px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: var(--radius-pill);
+    margin: 12px auto 6px;
+    cursor: grab;
+  }
+}
+
+.sheet-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sheet-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sheet-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all var(--duration-fast) ease;
+}
+
+.sheet-close-btn:hover {
+  background: var(--canvas-surface-2);
+  color: var(--text-primary);
+}
+
+.sheet-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(85vh - 70px);
+}
+
+/* Animations */
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sheetSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   6. Responsive Viewport Adaptations (360px, 390px, 480px, 1024px)
+   -------------------------------------------------------------------------- */
+/* Laptop screens (1024px–1279px): prevent overflow */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .canvas-content {
+    padding: 24px 20px;
+  }
+  .app-header {
+    padding: 0 20px;
+  }
+}
+
+/* Tablet & Mobile (< 1024px) */
+@media (max-width: 1023px) {
+  .app-sidebar {
+    display: none; /* Desktop sidebar hidden on tablet/mobile */
+  }
+
+  .mobile-glass-dock {
+    display: grid; /* Mobile glass dock visible */
+  }
+
+  .canvas-content {
+    padding: 16px;
+    /* SAFE AREA SPACING: Ensures floating dock never covers content */
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 16px));
+  }
+
+  .app-header {
+    padding: 0 16px;
+    height: 60px;
+  }
+}
+
+/* Narrow Mobile Screens (<= 480px, e.g. 360px, 390px, 480px) */
+@media (max-width: 480px) {
+  .header-actions .quick-id-trigger span {
+    display: none; /* Icon only on narrow screens to save space */
+  }
+  .header-actions .quick-id-trigger {
+    padding: 0 10px;
+  }
+  .page-title {
+    font-size: 18px;
+  }
+}
